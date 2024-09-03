@@ -1,0 +1,34 @@
+services:
+  spring-boot:
+    build:
+      context: ./
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - ollama
+    env_file:
+      - .env
+  ollama-pull:
+    image: docker/genai:ollama-pull
+    env_file:
+      - .env
+  ollama:
+    image: ollama/ollama:0.3.6
+    expose:
+      - "11434"
+    tty: true
+    restart: always
+    volumes:
+      - ollama_volume:/root/.ollama
+    #    deploy:
+    #      resources:
+    #        reservations:
+    #          devices:
+    #            - driver: nvidia
+    #              count: all
+    #              capabilities: [ gpu ]
+    env_file:
+      - .env
+volumes:
+  ollama_volume: { }
